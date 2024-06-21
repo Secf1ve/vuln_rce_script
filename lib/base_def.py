@@ -27,7 +27,9 @@ def default_header():
         'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
         'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
-        'Accept-Encoding': 'gzip, deflate, br, zstd'
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept': 'application/x-shockwave-flash, image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, '
+                  'application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*'
     }
     return header
 
