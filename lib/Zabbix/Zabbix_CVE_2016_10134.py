@@ -5,7 +5,7 @@ from lib import base_def
 
 '''
 zabbix latest.php SQL注入漏洞（CVE-2016-10134）
-auther:cyberfive
+modified by:cyberfive
 date:2024.6.26
 description:攻击共需要三次请求，第一次get请求获取到cookies,获取zbx_session，并截取其中的后16位用作第二次请求的sid。
             第二次post请求将已获得的sid通过进行注入，第三次get请求在‘toggle_ids[]’参数进行报错注入。
