@@ -53,7 +53,7 @@ def main():
     # Parse Arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--target', help='Target ip address or hostname', required=True)
-    parser.add_argument('-li', '--ipaddress', help='Listening IP address for reverse shell', required=False)
+    parser.add_argument('-li', '--reverseip', help='Listening IP address for reverse shell', required=False)
     parser.add_argument('-lp', '--port', help='Listening port for reverse shell', required=False)
     parser.add_argument('-u', '--username', help='Username to target', required=False)
     parser.add_argument('-p', '--password', help='Password value to set', required=False)
